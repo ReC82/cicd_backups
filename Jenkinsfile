@@ -9,6 +9,16 @@ pipeline {
         GRAFANA = "10.10.1.4"
         JENKINS = "10.10.1.1"
 
+        // BACKUP SCRIPTS CONFIG
+        SONAR_SCRIPT="/opt/sonarqube/backup/sonarqube_backup.sh"
+        GRAFANA_SCRIPT="/var/lib/grafana/backup/backup_grafana_db.sh"
+        JENKINS_SCRIPT="/var/lib/jenkins/backup/jenkins_backup_script.sh"
+
+        // BACKUP FOLDER
+        SONAR_BKP_FOLDER="/backups/sonarqube"
+        GRAFANA_BKP_FOLDER="/backups/grafana"
+        JENKINS_BKP_FOLDER="/backups/jenkins"
+
         // EMAIL CONFIG
         RECIPIENTS = 'lody.devops@gmail.com'
         SENDER_EMAIL = 'jenkins@lodywood.be'
