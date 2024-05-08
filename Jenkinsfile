@@ -74,7 +74,7 @@ pipeline {
                     )]) {
                         sh """
                             # Set the SSH command for Git operations
-                            git config --global core.sshCommand "ssh -i \${SSH_KEY_FILE} -o StrictHostKeyChecking=no"
+                            git config --global core.sshCommand "ssh -i \${GIT_KEY_FILE} -o StrictHostKeyChecking=no"
 
                             # Change to the workspace directory
                             cd \${WORKSPACE}
