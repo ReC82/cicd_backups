@@ -44,62 +44,6 @@ pipeline {
         }
 
         // SONARQUBE BACKUP
-        stage('BACKUP SONARQUBE') {
-            steps {
-                script {
-                    withCredentials([sshUserPrivateKey(
-                        credentialsId: env.SONARQUBE_CREDS_ID,
-                        keyFileVariable: 'SSH_KEY_FILE',                        
-                        usernameVariable: 'SSH_USER'
-                    )]) {
-                        sh """
-                            # Ensure known hosts to avoid SSH prompts
-                            ssh-keyscan \$SONARQUBE >> ~/.ssh/known_hosts
-
-                            ssh -i \${SSH_KEY_FILE} -o StrictHostKeyChecking=no \${SSH_USER}@\${SONARQUBE} \\
-                            "cd /tmp && sudo -u sonar bash \${SONAR_SCRIPT}"
-
-                            scp -i \$SSH_KEY_FILE -o StrictHostKeyChecking=no \${SSH_USER}@\${SONARQUBE}:\${SONAR_BACKUP_FILE} \$SONAR_BKP_FOLDER
-                        """
-                    }
-                }
-            }
-        }
-
-        pipeline {
-    agent {
-        label "main"
-    }
-
-    environment {
-        // SERVER CONFIG
-        SONARQUBE = "10.1.5.4"
-        
-        // SERVER CREDENTIALS
-        SONARQUBE_CREDS_ID = "QualityControl"
-
-        // BACKUP SCRIPT CONFIG
-        SONAR_SCRIPT = "/opt/sonarqube/backup/sonarqube_backup.sh"
-
-        // REMOTE BACKUP FILE
-        SONAR_BACKUP_FILE = "/opt/sonarqube/backup/*.sql"
-
-        // BACKUP FOLDER
-        SONAR_BKP_FOLDER = "./backups/sonarqube"
-
-        // GIT CONFIG
-        ARTIFACT_REPO = "git@github.com:ReC82/cicd_backups.git"
-        GIT_CREDENTIALS = "GitJenkins"
-        TARGET_BRANCH = "main"
-    }
-
-    stages {
-        stage('Checkout') {
-            steps {
-                checkout scm
-            }
-        }
-
         stage('Backup SonarQube') {
             steps {
                 script {
