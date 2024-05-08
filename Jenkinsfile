@@ -68,13 +68,7 @@ pipeline {
         stage('Commit Backup') {
             steps {
                 script {
-                    withCredentials([sshUserPrivateKey(
-                        credentialsId: env.GIT_CREDENTIALS,
-                        keyFileVariable: 'GIT_KEY_FILE'
-                    )]) {
                         sh """
-                            # Set the SSH command for Git operations
-                            git config --global core.sshCommand "ssh -i \${GIT_KEY_FILE} -o StrictHostKeyChecking=no"
 
                             # Change to the workspace directory
                             cd \${WORKSPACE}
@@ -88,7 +82,6 @@ pipeline {
                             # Push to the remote repository
                             git push -u origin \${TARGET_BRANCH}
                         """
-                    }
                 }
             }
         }      
