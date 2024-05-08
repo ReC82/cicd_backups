@@ -9,15 +9,22 @@ pipeline {
         GRAFANA = "10.10.1.4"
         JENKINS = "10.10.1.1"
 
+        // SERVER CREDENTIALS
+        SONARQUBE_CREDS_ID = "QualityControl"
+        GRAFANA_CREDS_ID = "Nagios"
+
         // BACKUP SCRIPTS CONFIG
         SONAR_SCRIPT="/opt/sonarqube/backup/sonarqube_backup.sh"
         GRAFANA_SCRIPT="/var/lib/grafana/backup/backup_grafana_db.sh"
         JENKINS_SCRIPT="/var/lib/jenkins/backup/jenkins_backup_script.sh"
 
+        // REMOTE BACKUP FILE
+        SONAR_BACKUP_FILE="/opt/sonarqube/backup/_pg_backup.sql"
+
         // BACKUP FOLDER
-        SONAR_BKP_FOLDER="/backups/sonarqube"
-        GRAFANA_BKP_FOLDER="/backups/grafana"
-        JENKINS_BKP_FOLDER="/backups/jenkins"
+        SONAR_BKP_FOLDER="./backups/sonarqube"
+        GRAFANA_BKP_FOLDER="./backups/grafana"
+        JENKINS_BKP_FOLDER="./backups/jenkins"
 
         // EMAIL CONFIG
         RECIPIENTS = 'lody.devops@gmail.com'
@@ -34,8 +41,35 @@ pipeline {
             steps {
                 checkout scm
             }
-        }       
+        }
+
+        // SONARQUBE BACKUP
+        stage('BACKUP SONARQUBE') {
+            steps {
+                script {
+                    withCredentials([sshUserPrivateKey(
+                        credentialsId: env.SONARQUBE_CREDS_ID,
+                        keyFileVariable: 'SSH_KEY_FILE',                        
+                        usernameVariable: 'SSH_USER'
+                    )]) {
+                        sh """
+                            # Ensure known hosts to avoid SSH prompts
+                            ssh-keyscan \$SONARQUBE >> ~/.ssh/known_hosts
+
+                            # Execute the backup script on the remote server as 'sonar'
+                            ssh -i \$SSH_KEY_FILE -o StrictHostKeyChecking=no \${SSH_USER}@\${SONARQUBE} \\
+                                "sudo -u sonar bash \${SONAR_SCRIPT}"
+
+                            scp -i \$SSH_KEY_FILE -o StrictHostKeyChecking=no \${SSH_USER}@\${SONARQUBE}:\${SONAR_BACKUP_FILE} \$SONAR_BKP_FOLDER
+                        """
+                    }
+                }
+            }
+        }      
     }
+
+
+
     post {
         failure {
             emailext(
