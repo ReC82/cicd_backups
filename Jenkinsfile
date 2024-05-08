@@ -73,7 +73,6 @@ pipeline {
                         keyFileVariable: 'GIT_KEY_FILE'
                     )]) {
                         sh """
-                            git config --global core.sshCommand "ssh -i \${GIT_KEY_FILE} -o StrictHostKeyChecking=no"
                             git add .
                             git commit -m "Backup SonarQube"
                             git push -u origin \${TARGET_BRANCH}
