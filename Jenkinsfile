@@ -56,9 +56,8 @@ pipeline {
                             # Ensure known hosts to avoid SSH prompts
                             ssh-keyscan \$SONARQUBE >> ~/.ssh/known_hosts
 
-                            # Execute the backup script on the remote server as 'sonar'
-                            ssh -i \$SSH_KEY_FILE -o StrictHostKeyChecking=no \${SSH_USER}@\${SONARQUBE} \\
-                                "sudo -u sonar bash \${SONAR_SCRIPT}"
+                            ssh -i \${SSH_KEY_FILE} -o StrictHostKeyChecking=no \${SSH_USER}@\${SONARQUBE} \\
+                            "cd /tmp && sudo -u sonar bash \${SONAR_SCRIPT}"
 
                             scp -i \$SSH_KEY_FILE -o StrictHostKeyChecking=no \${SSH_USER}@\${SONARQUBE}:\${SONAR_BACKUP_FILE} \$SONAR_BKP_FOLDER
                         """
