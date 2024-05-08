@@ -139,19 +139,16 @@ pipeline {
             }
         }      
     }
-
-
-
     post {
         failure {
             emailext(
                 subject: "Backup Job failed: ${currentBuild.fullDisplayName} - ${currentBuild.result}",
                 body: """
-Build Result: ${currentBuild.result}
-Build Number: ${currentBuild.number}
-Build URL: ${env.BUILD_URL}
-You can download the build report [here](${env.BUILD_URL}artifact/build-report.txt).
-""",
+                Build Result: ${currentBuild.result}
+                Build Number: ${currentBuild.number}
+                Build URL: ${env.BUILD_URL}
+                You can download the build report [here](${env.BUILD_URL}artifact/build-report.txt).
+                """,
                 to: env.RECIPIENTS,
                 from: env.SENDER_EMAIL,
                 attachLog: true
