@@ -19,7 +19,7 @@ pipeline {
         JENKINS_SCRIPT="/var/lib/jenkins/backup/jenkins_backup_script.sh"
 
         // REMOTE BACKUP FILE
-        SONAR_BACKUP_FILE="/opt/sonarqube/backup/_pg_backup.sql"
+        SONAR_BACKUP_FILE="/opt/sonarqube/backup/*.sql"
 
         // BACKUP FOLDER
         SONAR_BKP_FOLDER="./backups/sonarqube"
