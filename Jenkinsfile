@@ -72,8 +72,6 @@ pipeline {
                     keyFileVariable: 'GIT_KEY_FILE'
                 )]) {
                     sh """
-                        git config --global core.sshCommand "ssh -i \${GIT_KEY_FILE} -o StrictHostKeyChecking=no"
-
                         cd \${WORKSPACE}
 
                         git add .
