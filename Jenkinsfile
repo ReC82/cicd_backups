@@ -20,7 +20,7 @@ pipeline {
 
         // REMOTE BACKUP FILE
         SONAR_BACKUP_FILE="/opt/sonarqube/backup/*.sql"
-        GRAFANA_BACKUP_FILE="/opt/sonarqube/backup/*.sql"
+        GRAFANA_BACKUP_FILE="/var/lib/grafana/backup/*.db"
 
         // BACKUP FOLDER
         SONAR_BKP_FOLDER="./backups/sonarqube"
