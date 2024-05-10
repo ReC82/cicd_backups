@@ -32,7 +32,7 @@ pipeline {
 
         // GIT CONFIG
         ARTIFACT_REPO = 'git@github.com:ReC82/cicd_backups.git'
-        GIT_CREDENTIALS = 'GitJenkinsToken'
+        GIT_CREDENTIALS = 'GitJekinsToken'
         TARGET_BRANCH = 'main'
     }
 
@@ -67,9 +67,8 @@ pipeline {
 
         stage('Commit Backup') {
             steps {
-                withCredentials([sshUserPrivateKey(
-                    credentialsId: env.GIT_CREDENTIALS,
-                    gitToolName: 'Default'
+                withCredentials([gitUsernamePassword(
+                    credentialsId: env.GIT_CREDENTIALS
                 )]) {
                     sh """
                         cd \${WORKSPACE}
