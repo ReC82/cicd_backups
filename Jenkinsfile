@@ -43,6 +43,16 @@ pipeline {
             }
         }
 
+    stage("Clone Git Repository") {
+        steps {
+            git(
+                url: "https://github.com/ReC82/cicd_backups.git",
+                branch: "main",
+                changelog: true,
+                poll: true
+            )
+        }
+
         // SONARQUBE BACKUP
         stage('Backup SonarQube') {
             steps {
@@ -72,7 +82,7 @@ pipeline {
                 )]) {
                     sh """
                         cd \${WORKSPACE}
-                        git checkout -b main
+                        # git checkout -b main
                         git add .
                         git commit -m "Backup changes"
                         git push -u origin \${TARGET_BRANCH}
