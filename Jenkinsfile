@@ -72,10 +72,9 @@ pipeline {
                     keyFileVariable: 'GIT_KEY_FILE'
                 )]) {
                     sh """
-                        git config --global core.sshCommand "ssh -i \${GIT_KEY_FILE} -o StrictHostKeyChecking=no"
-
                         cd \${WORKSPACE}
-
+                        git config user.name "ReC82"
+                        git config user.email "lloyd.malfliet@gmail.com"  
                         git add .
                         git commit -m "Backup changes"
                         git push -u origin \${TARGET_BRANCH}
