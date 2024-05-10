@@ -90,7 +90,7 @@ pipeline {
                             ssh-keyscan \${GRAFANA} >> ~/.ssh/known_hosts
 
                             ssh -i \${SSH_KEY_FILE} -o StrictHostKeyChecking=no \${SSH_USER}@\${GRAFANA} \\
-                                "cd /tmp && sudo -u sonar bash \${GRAFANA_SCRIPT}"
+                                "cd /tmp && sudo -u grafana bash \${GRAFANA_SCRIPT}"
 
                             scp -i \${SSH_KEY_FILE} -o StrictHostKeyChecking=no \${SSH_USER}@\${GRAFANA}:\${GRAFANA_BACKUP_FILE} \${GRAFANA_BKP_FOLDER}
                         """
