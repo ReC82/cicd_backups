@@ -32,7 +32,7 @@ pipeline {
 
         // GIT CONFIG
         ARTIFACT_REPO = 'git@github.com:ReC82/cicd_backups.git'
-        GIT_CREDENTIALS = 'GitJenkins'
+        GIT_CREDENTIALS = 'GitJenkinsToken'
         TARGET_BRANCH = 'main'
     }
 
@@ -69,12 +69,10 @@ pipeline {
             steps {
                 withCredentials([sshUserPrivateKey(
                     credentialsId: env.GIT_CREDENTIALS,
-                    keyFileVariable: 'GIT_KEY_FILE'
+                    gitToolName: 'Default'
                 )]) {
                     sh """
                         cd \${WORKSPACE}
-                        git config user.name "ReC82"
-                        git config user.email "lloyd.malfliet@gmail.com"  
                         git add .
                         git commit -m "Backup changes"
                         git push -u origin \${TARGET_BRANCH}
