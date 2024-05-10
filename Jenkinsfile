@@ -72,6 +72,7 @@ pipeline {
                 )]) {
                     sh """
                         cd \${WORKSPACE}
+                        git checkout -b main
                         git add .
                         git commit -m "Backup changes"
                         git push -u origin \${TARGET_BRANCH}
