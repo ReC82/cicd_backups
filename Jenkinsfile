@@ -20,6 +20,7 @@ pipeline {
 
         // REMOTE BACKUP FILE
         SONAR_BACKUP_FILE="/opt/sonarqube/backup/*.sql"
+        GRAFANA_BACKUP_FILE="/opt/sonarqube/backup/*.sql"
 
         // BACKUP FOLDER
         SONAR_BKP_FOLDER="./backups/sonarqube"
@@ -75,6 +76,28 @@ pipeline {
                 }
             }
         }
+
+        // GRAFANA BACKUP
+        stage('Backup Grafana') {
+            steps {
+                script {
+                    withCredentials([sshUserPrivateKey(
+                        credentialsId: env.GRAFANA_CREDS_ID,
+                        keyFileVariable: 'SSH_KEY_FILE',
+                        usernameVariable: 'SSH_USER'
+                    )]) {
+                        sh """
+                            ssh-keyscan \${GRAFANA} >> ~/.ssh/known_hosts
+
+                            ssh -i \${SSH_KEY_FILE} -o StrictHostKeyChecking=no \${SSH_USER}@\${GRAFANA} \\
+                                "cd /tmp && sudo -u sonar bash \${GRAFANA_SCRIPT}"
+
+                            scp -i \${SSH_KEY_FILE} -o StrictHostKeyChecking=no \${SSH_USER}@\${GRAFANA}:\${GRAFANA_BACKUP_FILE} \${GRAFANA_BKP_FOLDER}
+                        """
+                    }
+                }
+            }
+        }        
 
         stage('Commit Backup') {
             steps {
