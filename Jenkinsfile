@@ -6,7 +6,7 @@ pipeline {
     environment {
         // SERVER CONFIG
         SONARQUBE = "10.1.5.4"
-        GRAFANA = "10.10.6.4"
+        GRAFANA = "10.1.6.4"
         JENKINS = "10.10.1.1"
 
         // SERVER CREDENTIALS
