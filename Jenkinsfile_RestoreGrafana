@@ -5,16 +5,16 @@ pipeline {
 
     environment {
         // SERVER CONFIG
-        SONARQUBE = "10.1.5.4"
+        GRAFANA = "10.1.5.4"
 
         // SERVER CREDENTIALS
-        SONARQUBE_CREDS_ID = "quality.pem"
+        GRAFANA_CREDS_ID = "monitoring.pem"
 
         // RESTORE SCRIPTS CONFIG
-        SONAR_SCRIPT="/opt/sonarqube/backup/sonarqube_restore.sh"
+        GRAFANA_SCRIPT="/var/lib/grafana/backup/restore_grafana_db.sh"
 
         // BACKUP FOLDER
-        SONAR_BKP_FOLDER="./backups/sonarqube"
+        GRAFANA_BKP_FOLDER="./backups/grafana"
 
         // EMAIL CONFIG
         RECIPIENTS = 'lody.devops@gmail.com'
@@ -44,20 +44,20 @@ pipeline {
             }
         }
 
-        // SONARQUBE RESTORE
-        stage('Restore SonarQube') {
+        // GRAFANA RESTORE
+        stage('Restore Grafana') {
             steps {
                 script {
                     withCredentials([sshUserPrivateKey(
-                        credentialsId: env.SONARQUBE_CREDS_ID,
+                        credentialsId: env.GRAFANA_CREDS_ID,
                         keyFileVariable: 'SSH_KEY_FILE',
                         usernameVariable: 'SSH_USER'
                     )]) {
                         sh """
-                            ssh-keyscan \${SONARQUBE} >> ~/.ssh/known_hosts
+                            ssh-keyscan \${GRAFANA} >> ~/.ssh/known_hosts
 
-                            ssh -i \${SSH_KEY_FILE} -o StrictHostKeyChecking=no \${SSH_USER}@\${SONARQUBE} \\
-                                "cd /tmp && sudo -u sonar bash \${SONAR_SCRIPT}"
+                            ssh -i \${SSH_KEY_FILE} -o StrictHostKeyChecking=no \${SSH_USER}@\${GRAFANA} \\
+                                "cd /tmp && sudo -u grafana bash \${GRAFANA_SCRIPT}"
                         """
                     }
                 }
@@ -67,7 +67,7 @@ pipeline {
     post {
         failure {
             emailext(
-                subject: "Sonar Restore failed: ${currentBuild.fullDisplayName} - ${currentBuild.result}",
+                subject: "Grafana Restore failed: ${currentBuild.fullDisplayName} - ${currentBuild.result}",
                 body: """
                 Build Result: ${currentBuild.result}
                 Build Number: ${currentBuild.number}

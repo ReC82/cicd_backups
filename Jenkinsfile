@@ -10,8 +10,8 @@ pipeline {
         JENKINS = "10.10.1.1"
 
         // SERVER CREDENTIALS
-        SONARQUBE_CREDS_ID = "QualityControl"
-        GRAFANA_CREDS_ID = "Nagios"
+        SONARQUBE_CREDS_ID = "quality.pem"
+        GRAFANA_CREDS_ID = "monitoring.pem"
 
         // BACKUP SCRIPTS CONFIG
         SONAR_SCRIPT="/opt/sonarqube/backup/sonarqube_backup.sh"
