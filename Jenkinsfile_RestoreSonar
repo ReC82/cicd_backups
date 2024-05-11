@@ -1,0 +1,83 @@
+pipeline {
+    agent {
+        label "main"
+    }
+
+    environment {
+        // SERVER CONFIG
+        SONARQUBE = "10.1.5.4"
+
+        // SERVER CREDENTIALS
+        SONARQUBE_CREDS_ID = "QualityControl"
+
+        // RESTORE SCRIPTS CONFIG
+        SONAR_SCRIPT="/opt/sonarqube/backup/sonarqube_restore.sh"
+
+        // BACKUP FOLDER
+        SONAR_BKP_FOLDER="./backups/sonarqube"
+
+        // EMAIL CONFIG
+        RECIPIENTS = 'lody.devops@gmail.com'
+        SENDER_EMAIL = 'jenkins@lodywood.be'
+
+        // GIT CONFIG
+        ARTIFACT_REPO = 'git@github.com:ReC82/cicd_backups.git'
+        GIT_CREDENTIALS = 'GitJekinsToken'
+        TARGET_BRANCH = 'main'
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
+
+        stage("Clone Git Repository") {
+            steps {
+                git(
+                    url: "https://github.com/ReC82/cicd_backups.git",
+                    branch: "main",
+                    changelog: true,
+                    poll: true
+                )
+            }
+        }
+
+        // SONARQUBE RESTORE
+        stage('Backup SonarQube') {
+            steps {
+                script {
+                    withCredentials([sshUserPrivateKey(
+                        credentialsId: env.SONARQUBE_CREDS_ID,
+                        keyFileVariable: 'SSH_KEY_FILE',
+                        usernameVariable: 'SSH_USER'
+                    )]) {
+                        sh """
+                            ssh-keyscan \${SONARQUBE} >> ~/.ssh/known_hosts
+
+                            ssh -i \${SSH_KEY_FILE} -o StrictHostKeyChecking=no \${SSH_USER}@\${SONARQUBE} \\
+                                "cd /tmp && sudo -u sonar bash \${SONAR_SCRIPT}"
+                        """
+                    }
+                }
+            }
+        }         
+    }
+    post {
+        failure {
+            emailext(
+                subject: "Sonar Restore failed: ${currentBuild.fullDisplayName} - ${currentBuild.result}",
+                body: """
+                Build Result: ${currentBuild.result}
+                Build Number: ${currentBuild.number}
+                Build URL: ${env.BUILD_URL}
+                You can download the build report [here](${env.BUILD_URL}artifact/build-report.txt).
+                """,
+                to: env.RECIPIENTS,
+                from: env.SENDER_EMAIL,
+                attachLog: true
+            )
+        }
+    }
+}
