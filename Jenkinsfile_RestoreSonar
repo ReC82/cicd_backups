@@ -55,7 +55,7 @@ pipeline {
                     )]) {
                         sh """
                             ssh-keyscan \${SONARQUBE} >> ~/.ssh/known_hosts
-
+                            scp -i \${SSH_KEY_FILE} -o StrictHostKeyChecking=no \${SONAR_BKP_FOLDER} \${SSH_USER}@\${SONARQUBE}:\${SONAR_BACKUP_FILE} 
                             ssh -i \${SSH_KEY_FILE} -o StrictHostKeyChecking=no \${SSH_USER}@\${SONARQUBE} "cd /tmp && sudo -u sonar bash \${SONAR_SCRIPT}"
                         """
                     }
