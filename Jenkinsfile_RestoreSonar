@@ -17,7 +17,7 @@ pipeline {
         SONAR_BKP_FOLDER="./backups/sonarqube"
 
         // REMOTE BACKUP FOLDER
-        REMOTE_SONAR_BKP_FOLDER="/tmp"
+        REMOTE_SONAR_BKP_FOLDER="/opt/sonarqube/backup"
 
         // EMAIL CONFIG
         RECIPIENTS = 'lody.devops@gmail.com'
@@ -58,8 +58,8 @@ pipeline {
                     )]) {
                         sh """
                             ssh-keyscan \${SONARQUBE} >> ~/.ssh/known_hosts
-                            scp -i \${SSH_KEY_FILE} -o StrictHostKeyChecking=no \${SONAR_BKP_FOLDER}/* \${SSH_USER}@\${SONARQUBE}:\${REMOTE_SONAR_BKP_FOLDER} 
-                            ssh -i \${SSH_KEY_FILE} -o StrictHostKeyChecking=no \${SSH_USER}@\${SONARQUBE} "cd /tmp && sudo -u sonar bash \${SONAR_SCRIPT}"
+                            scp -i \${SSH_KEY_FILE} -o StrictHostKeyChecking=no \${SONAR_BKP_FOLDER}/* \${SSH_USER}@\${SONARQUBE}:/tmp
+                            ssh -i \${SSH_KEY_FILE} -o StrictHostKeyChecking=no \${SSH_USER}@\${SONARQUBE} "cd /tmp && mv *.sql \${REMOTE_SONAR_BKP_FOLDER} && sudo -u sonar bash \${SONAR_SCRIPT}"
                         """
                     }
                 }
