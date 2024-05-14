@@ -59,7 +59,7 @@ pipeline {
                         sh """
                             ssh-keyscan \${SONARQUBE} >> ~/.ssh/known_hosts
                             scp -i \${SSH_KEY_FILE} -o StrictHostKeyChecking=no \${SONAR_BKP_FOLDER}/* \${SSH_USER}@\${SONARQUBE}:/tmp
-                            ssh -i \${SSH_KEY_FILE} -o StrictHostKeyChecking=no \${SSH_USER}@\${SONARQUBE} "cd /tmp && sudo -u sonar bash -c 'mv /tmp/*.sql \${REMOTE_SONAR_BKP_FOLDER}' && sudo -u sonar bash -c 'whoami' && sudo -u sonar bash \${SONAR_SCRIPT}"
+                            ssh -i \${SSH_KEY_FILE} -o StrictHostKeyChecking=no \${SSH_USER}@\${SONARQUBE} "sudo chmod 777 /tmp/*.sql && sudo -u sonar bash -c 'mv /tmp/*.sql \${REMOTE_SONAR_BKP_FOLDER}' && sudo -u sonar bash \${SONAR_SCRIPT}"
                         """
                     }
                 }
