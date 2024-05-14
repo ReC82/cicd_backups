@@ -17,7 +17,7 @@ pipeline {
         SONAR_BKP_FOLDER="./backups/sonarqube"
 
         // REMOTE BACKUP FOLDER
-        REMOTE_SONAR_BKP_FOLDER="/opt/sonarqube/backup/"
+        REMOTE_SONAR_BKP_FOLDER="/tmp"
 
         // EMAIL CONFIG
         RECIPIENTS = 'lody.devops@gmail.com'
