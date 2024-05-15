@@ -5,7 +5,7 @@ pipeline {
 
     environment {
         // SERVER CONFIG
-        GRAFANA = "10.1.5.4"
+        GRAFANA = "10.1.6.4"
 
         // SERVER CREDENTIALS
         GRAFANA_CREDS_ID = "monitoring.pem"
