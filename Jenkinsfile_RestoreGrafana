@@ -57,7 +57,7 @@ pipeline {
                             ssh-keyscan \${GRAFANA} >> ~/.ssh/known_hosts
                             scp -i \${SSH_KEY_FILE} -o StrictHostKeyChecking=no \${WORKSPACE}/backups/grafana/*.db \${SSH_USER}@\${GRAFANA}:/tmp
                             ssh -i \${SSH_KEY_FILE} -o StrictHostKeyChecking=no \${SSH_USER}@\${GRAFANA} \\
-                                "sudo chmod 777 /tmp*.db && sudo -u grafana mv /tmp/*.db /var/lib/grafana/backup/"                            
+                                "sudo chmod 777 /tmp/*.db && sudo -u grafana mv /tmp/*.db /var/lib/grafana/backup/"                            
                             ssh -i \${SSH_KEY_FILE} -o StrictHostKeyChecking=no \${SSH_USER}@\${GRAFANA} \\
                                 "cd /tmp && sudo -u grafana bash \${GRAFANA_SCRIPT}"
                         """
