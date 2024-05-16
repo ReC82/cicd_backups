@@ -55,7 +55,7 @@ pipeline {
                     )]) {
                         sh """
                             ssh-keyscan \${GRAFANA} >> ~/.ssh/known_hosts
-                            scp -i \${SSH_KEY_FILE} -o StrictHostKeyChecking=no \${WORKSPACE}/*.db \${SSH_USER}@\${GRAFANA}:/tmp
+                            scp -i \${SSH_KEY_FILE} -o StrictHostKeyChecking=no \${WORKSPACE}/backups/grafana/*.db \${SSH_USER}@\${GRAFANA}:/tmp
                             ssh -i \${SSH_KEY_FILE} -o StrictHostKeyChecking=no \${SSH_USER}@\${GRAFANA} \\
                                 "cd /tmp && sudo -u grafana bash \${GRAFANA_SCRIPT}"
                         """
